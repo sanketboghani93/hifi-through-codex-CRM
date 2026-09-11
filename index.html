@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#26201d" />
+    <title>Hifi Collection | Visit Desk</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="#" aria-label="Hifi Collection home"><span class="brand-mark">H</span><span>Hifi <em>Collection</em></span></a>
+        <div class="top-actions"><span class="sync-status" id="syncStatus"><i></i> Ready to log</span><button class="icon-button" id="settingsButton" aria-label="Open settings">⚙</button></div>
+      </header>
+
+      <main>
+        <section class="intro">
+          <p class="eyebrow">IN-STORE CONCIERGE</p>
+          <div class="title-row"><div><h1>Make every visit<br /><em>memorable.</em></h1><p class="intro-copy">Capture a styling conversation, then send a beautiful edit straight to their WhatsApp.</p></div><div class="date-badge" id="todayDate"></div></div>
+        </section>
+
+        <div class="progress"><span class="active">01 <b>Guest</b></span><span>02 <b>Style edit</b></span><span>03 <b>Send</b></span></div>
+
+        <section class="workspace" id="formView">
+          <form id="visitForm" novalidate>
+            <div class="form-card guest-card">
+              <div class="card-heading"><div><p class="section-number">01 — THE GUEST</p><h2>Who are we styling?</h2></div><span class="required-note">* Required</span></div>
+              <div class="fields guest-fields">
+                <label class="field field-name"><span>Full name <b>*</b></span><input id="customerName" name="customerName" placeholder="e.g. Aanya Kapoor" required autocomplete="name" /></label>
+                <label class="field"><span>Phone number <b>*</b></span><input id="phone" name="phone" type="tel" placeholder="e.g. 98765 43210" required autocomplete="tel" /></label>
+                <label class="field"><span>Email <small>optional</small></span><input id="email" name="email" type="email" placeholder="hello@example.com" autocomplete="email" /></label>
+                <label class="field"><span>Instagram <small>optional</small></span><input id="instagram" name="instagram" placeholder="@handle" /></label>
+              </div>
+            </div>
+
+            <div class="form-card edit-card">
+              <div class="card-heading"><div><p class="section-number">02 — THE STYLE EDIT</p><h2>What caught their eye?</h2></div><label class="field event-field"><span>Event date</span><input id="eventDate" name="eventDate" type="date" /></label></div>
+              <div id="productList" class="product-list"></div>
+              <button type="button" class="add-product" id="addProduct"><span>+</span> Add another piece</button>
+              <label class="field notes-field"><span>Stylist notes <small>optional</small></span><textarea id="notes" name="notes" rows="3" placeholder="Fit notes, colours they loved, next steps…"></textarea></label>
+            </div>
+
+            <div class="message-strip"><span class="spark">✦</span><div><strong>Your Hifi note</strong><p id="messagePreview">Hi {name}, it was lovely having you at Hifi Collection. Here is a little edit saved especially for you.</p></div><button type="button" id="editMessage">Edit</button></div>
+            <button class="submit-button" type="submit"><span>Create visit card</span><span class="arrow">↗</span></button>
+          </form>
+          <aside class="side-note"><div class="note-symbol">✳</div><p><strong>A thoughtful follow-up<br />starts here.</strong></p><p>Every detail is saved to your private visit log.</p></aside>
+        </section>
+
+        <section class="card-view hidden" id="cardView" aria-live="polite">
+          <button class="back-button" id="newVisit">← Log another visit</button>
+          <div class="success-heading"><span>✦ VISIT SAVED</span><h2>A little something<br /><em>for your guest.</em></h2></div>
+          <article class="visit-card" id="visitCard">
+            <div class="card-top"><span>HIFI COLLECTION</span><span id="cardDate"></span></div><div class="card-body"><p class="card-greeting">For <span id="cardName"></span></p><h3>Your Hifi<br />style edit</h3><p class="card-message" id="cardMessage"></p><div class="card-products" id="cardProducts"></div></div><div class="card-footer"><span>Fashion rentals, thoughtfully chosen.</span><span>HC ✦</span></div>
+          </article>
+          <div class="share-actions"><button id="whatsappButton" class="whatsapp-button"><span>◔</span> Send on WhatsApp</button><button id="copyButton" class="secondary-button">Copy details</button></div>
+          <p class="logged-text" id="loggedText">Saved to this device</p>
+        </section>
+      </main>
+    </div>
+
+    <dialog id="messageDialog"><form method="dialog" class="dialog-form"><button class="close-dialog" value="cancel">×</button><p class="eyebrow">PERSONALISE THE FOLLOW-UP</p><h2>Your Hifi note</h2><p>This message will appear on the visit card and in WhatsApp.</p><textarea id="messageInput" rows="6"></textarea><button class="save-message" id="saveMessage" value="default">Save note</button></form></dialog>
+    <dialog id="settingsDialog"><form method="dialog" class="dialog-form"><button class="close-dialog" value="cancel">×</button><p class="eyebrow">TEAM SETTINGS</p><h2>Visit log connection</h2><p>Paste your Google Apps Script web app URL to log every submitted visit to Google Sheets.</p><label class="field"><span>Apps Script URL</span><input id="sheetEndpoint" type="url" placeholder="https://script.google.com/macros/s/.../exec" /></label><button class="save-message" id="saveSettings" value="default">Save connection</button><button class="clear-link" id="clearSettings" value="default">Use device storage only</button></form></dialog>
+    <template id="productTemplate"><div class="product-row"><label class="field"><span>Product category <b>*</b></span><select class="product-category" required><option value="" selected disabled>Select category</option><option>Lehenga</option><option>Gown</option><option>Saree</option><option>Co-ord set</option><option>Dress</option><option>Jewellery</option><option>Accessory</option><option>Other</option></select></label><label class="field"><span>Product ID <b>*</b></span><input class="product-id" placeholder="e.g. HFC-042" required /></label><button type="button" class="remove-product" aria-label="Remove product">×</button></div></template>
+    <script src="app.js"></script>
+  </body>
+</html>
